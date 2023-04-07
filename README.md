@@ -18,14 +18,25 @@ local graph = Graphviz()
 add a node
 
 ### `graph:edge(...)`
-add a edges
+add edges
 
+link the first given node to each consequent:
 ```
 args[1] -> args[2]
 args[1] -> args[3]
 ...
 args[1] -> args[n]
 ```
+
+### `graph:add_nodes(t)`
+add nodes from the table t
+
+Expression `graph:add_nodes({a="b", 42})` is equivalent to `graph:node("a", "b"):node(1, 42)`
+
+### `graph:add_edges(...)`
+add a variadic number of edge sets
+
+Expression `graph:add_edges({"a", "b"}, {1,2,3})` is equivalent to `graph:edge("a", "b"):edge(1, 2, 3)`
 
 ### `graph:source()`
 return graph as string

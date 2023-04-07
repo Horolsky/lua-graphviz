@@ -26,11 +26,28 @@ local __Graph = {
 		return self
 	end,
 
+	add_nodes = function(self, t)
+		
+		for nodename, label in pairs(t) do
+			self:node(nodename, label)
+		end
+		return self
+	end,
+
 	edge = function(self, ...)
 		local args = {...}
 
 		for i = 2, #args do
 			table.insert(self.edges.edge, {prev = args[1], succ = args[i]})
+		end
+
+		return self
+	end,
+
+	add_edges = function(self, ...)
+
+		for _, e in ipairs({...}) do
+			self:edge(table.unpack(e))
 		end
 
 		return self
