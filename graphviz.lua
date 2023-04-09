@@ -22,12 +22,12 @@ end
 
 local __Graph = {
 	node = function(self, nodename, label)
-		table.insert(self.nodes.node, {node =nodename, label = label})
+		table.insert(self.nodes.data, {node =nodename, label = label})
 		return self
 	end,
 
 	add_nodes = function(self, t)
-		
+
 		for nodename, label in pairs(t) do
 			self:node(nodename, label)
 		end
@@ -38,7 +38,7 @@ local __Graph = {
 		local args = {...}
 
 		for i = 2, #args do
-			table.insert(self.edges.edge, {prev = args[1], succ = args[i]})
+			table.insert(self.edges.data, {prev = args[1], succ = args[i]})
 		end
 
 		return self
@@ -62,7 +62,7 @@ local __Graph = {
 			"\tnode [" .. self.nodes.style:expand() .. "]\n" ..
 			"\tedge [" .. self.edges.style:expand() .. "]\n"
 
-		local node = self.nodes.node
+		local node = self.nodes.data
 		for i = 1, #node do
 			src = src .. ("\t\t%s [label=\"%s\"]\n"):format(node[i].node, node[i].label)
 		end
@@ -72,7 +72,7 @@ local __Graph = {
 			src = src .. ("\n%s\n"):format( subgraph:source("subgraph" , subgraphname , level + 1) )
 		end
 
-		local edge = self.edges.edge
+		local edge = self.edges.data
 		for i = 1, #edge do
 			src = src .. ("\t\t\t%s -> %s\n"):format(edge[i].prev, edge[i].succ)
 		end
@@ -188,19 +188,19 @@ local style_index = {
 }
 
 -- pseudo Graph class
-Graph = function()
-	return setmetatable({
-		edges = {
-			edge = {},
-			style = setmetatable({}, {__index = style_index})},
-		nodes = {
-			node = {},
-			style = setmetatable({}, {__index = style_index})},
-		graph = {
-			style = setmetatable({}, {__index = style_index})},
-		subgraphs = {},
-	}, {__index = __Graph})
-end
-
-return Graph
-
+return setmetatable({}, {
+	__index = __Graph,
+	__call = function()
+		return setmetatable({
+			edges = {
+				data = {},
+				style = setmetatable({}, {__index = style_index})},
+			nodes = {
+				data = {},
+				style = setmetatable({}, {__index = style_index})},
+			graph = {
+				style = setmetatable({}, {__index = style_index})},
+			subgraphs = {},
+		}, {__index = __Graph})
+	end
+})
